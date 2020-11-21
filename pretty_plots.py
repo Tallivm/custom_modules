@@ -5,6 +5,21 @@ from numpy import linspace, ceil
 
 c_palette = cycle(cm.tab20(linspace(0,1,20)))
 
+
+class txt_eff:
+  '''thanks, Boubakr'''
+   PURPLE = '\033[95m'
+   CYAN = '\033[96m'
+   DARKCYAN = '\033[36m'
+   BLUE = '\033[94m'
+   GREEN = '\033[92m'
+   YELLOW = '\033[93m'
+   RED = '\033[91m'
+   BOLD = '\033[1m'
+   UNDERLINE = '\033[4m'
+   END = '\033[0m'
+
+  
 def column_hists(df, ncol=5, square_size=3):
   x, y = int(ceil(len(df.columns)/ncol)), ncol
   fig, axs = plt.subplots(x, y, figsize=(y*square_size, x*square_size))
@@ -16,3 +31,14 @@ def column_hists(df, ncol=5, square_size=3):
     else: axs[x0, x1].axis('off')
   plt.tight_layout()
   plt.show()
+
+  
+def rank_results(scores, item_names, score_names, main_score_id=0, round_by=5):
+  results = sorted(zip(item_names, scores), key=lambda x: x[1][main_score_id], reverse=True)
+  for res in results:
+    name = res[0]
+    print(ppp.txt_eff.BOLD + ppp.txt_eff.UNDERLINE + name)
+    for n, score in enumerate(res[1]):
+      effect = ppp.txt_eff.BOLD if n==main_score_id else ''
+      print(effect + f'{score_names[n]}: {score[n]:.{round_by}f}')
+    print('-'*10)
