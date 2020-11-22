@@ -43,13 +43,26 @@ def rank_results(scores, item_names, score_names, main_score_id=0, round_by=5):
       print(effect + f'{score_names[n]}: {score:.{round_by}f}' + txt_eff.END)
     print('-'*10)
 
-def plot_corrs(df, plot_size=12):
-  '''thanks, Dick Fox'''
-  f = plt.figure(figsize=(plot_size*1.3, plot_size))
-  plt.matshow(df.corr(), fignum=f.number)
-  plt.xticks(range(df.shape[1]), df.columns, rotation=45)
-  plt.yticks(range(df.shape[1]), df.columns)
-  cb = plt.colorbar()
-  cb.ax.tick_params()
-  plt.title('Correlation Matrix');                                         
+def plot_corrs(df, method='pearson', plot_size=8):
+  table = df.corr(method=method)
+  fig, ax = plt.subplots(figsize=(plot_size, plot_size))
+  im = ax.imshow(table)
+  ax.set_xticks(np.arange(len(df.columns)))
+  ax.set_yticks(np.arange(len(df.columns)))
+  ax.set_xticklabels(df.columns, fontsize=plot_size*1.6)
+  ax.set_yticklabels(df.columns, fontsize=plot_size*1.6)
+  plt.setp(ax.get_xticklabels(), rotation=45, ha="right",
+         rotation_mode="anchor")
+  for edge, spine in ax.spines.items():
+    spine.set_visible(False)
+
+  for i in range(len(df.columns)):
+    for j in range(len(df.columns)):
+      sel_color = 'w' if table.iloc[i, j]<.5 else 'k'
+      ax.text(j, i, table.iloc[i, j].round(2), fontsize=plot_size*1.6,
+              ha="center", va="center", color=sel_color)
+
+  ax.set_title("Correlations plot", fontsize=plot_size*2.2)
+  plt.tight_layout()
+  plt.show()                                    
                                           
