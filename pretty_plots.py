@@ -34,11 +34,11 @@ def column_hists(df, ncol=5, square_size=3):
 
   
 def rank_results(scores, item_names, score_names, main_score_id=0, round_by=5):
-  results = sorted(zip(item_names, [scores]), key=lambda x: x[1][main_score_id], reverse=True)
+  results = sorted(zip(item_names, scores), key=lambda x: x[1][main_score_id], reverse=True)
   for res in results:
     name = res[0]
-    print(txt_eff.BOLD + txt_eff.UNDERLINE + name)
+    print(txt_eff.BOLD + txt_eff.UNDERLINE + name + txt_eff.END)
     for n, score in enumerate(res[1]):
       effect = txt_eff.BOLD if n==main_score_id else ''
-      print(effect + f'{score_names[n]}: {score[n]:.{round_by}f}')
+      print(effect + f'{score_names[n]}: {score[n]:.{round_by}f}' + txt_eff.END)
     print('-'*10)
