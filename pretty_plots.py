@@ -42,3 +42,14 @@ def rank_results(scores, item_names, score_names, main_score_id=0, round_by=5):
       effect = txt_eff.BOLD if n==main_score_id else ''
       print(effect + f'{score_names[n]}: {score:.{round_by}f}' + txt_eff.END)
     print('-'*10)
+
+def plot_corrs(df, plot_size=12):
+  '''thanks, Dick Fox'''
+  f = plt.figure(figsize=(plot_size*1.3, plot_size))
+  plt.matshow(df.corr(), fignum=f.number)
+  plt.xticks(range(df.shape[1]), df.columns, rotation=45)
+  plt.yticks(range(df.shape[1]), df.columns)
+  cb = plt.colorbar()
+  cb.ax.tick_params()
+  plt.title('Correlation Matrix');                                         
+                                          
