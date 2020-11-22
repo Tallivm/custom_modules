@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 from matplotlib import cm
 from itertools import cycle, zip_longest
-from numpy import linspace, ceil
+from numpy import linspace, ceil, arange
 
 c_palette = cycle(cm.tab20(linspace(0,1,20)))
 
@@ -47,8 +47,8 @@ def plot_corrs(df, method='pearson', plot_size=8):
   table = df.corr(method=method)
   fig, ax = plt.subplots(figsize=(plot_size, plot_size))
   im = ax.imshow(table)
-  ax.set_xticks(np.arange(len(df.columns)))
-  ax.set_yticks(np.arange(len(df.columns)))
+  ax.set_xticks(arange(len(df.columns)))
+  ax.set_yticks(arange(len(df.columns)))
   ax.set_xticklabels(df.columns, fontsize=plot_size*1.6)
   ax.set_yticklabels(df.columns, fontsize=plot_size*1.6)
   plt.setp(ax.get_xticklabels(), rotation=45, ha="right",
