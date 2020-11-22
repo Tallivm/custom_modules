@@ -40,5 +40,5 @@ def rank_results(scores, item_names, score_names, main_score_id=0, round_by=5):
     print(txt_eff.BOLD + txt_eff.UNDERLINE + name + txt_eff.END)
     for n, score in enumerate(res[1]):
       effect = txt_eff.BOLD if n==main_score_id else ''
-      print(effect + f'{score_names[n]}: {score[n]:.{round_by}f}' + txt_eff.END)
+      print(effect + f'{score_names[n]}: {score:.{round_by}f}' + txt_eff.END)
     print('-'*10)
