@@ -2,6 +2,8 @@ import matplotlib.pyplot as plt
 from matplotlib import cm
 from itertools import cycle, zip_longest, product, chain
 from numpy import linspace, ceil, arange
+from sklearn import cross_validate
+
 
 c_palette = cycle(cm.tab20(linspace(0,1,20)))
 
