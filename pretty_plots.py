@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 from matplotlib import cm
-from itertools import cycle, zip_longest
+from itertools import cycle, zip_longest, product, chain
 from numpy import linspace, ceil, arange
 
 c_palette = cycle(cm.tab20(linspace(0,1,20)))
@@ -20,6 +20,8 @@ class txt_eff:
   END = '\033[0m'
 
   
+# EXPLANATORY ANALYSIS  
+  
 def column_hists(df, ncol=5, square_size=3):
   x, y = int(ceil(len(df.columns)/ncol)), ncol
   fig, axs = plt.subplots(x, y, figsize=(y*square_size, x*square_size))
@@ -35,17 +37,7 @@ def column_hists(df, ncol=5, square_size=3):
   plt.tight_layout()
   plt.show()
 
-  
-def rank_results(scores, item_names, score_names, main_score_id=0, round_by=5):
-  results = sorted(zip(item_names, scores), key=lambda x: x[1][main_score_id], reverse=True)
-  for res in results:
-    name = res[0]
-    print(txt_eff.BOLD + txt_eff.UNDERLINE + name + txt_eff.END)
-    for n, score in enumerate(res[1]):
-      effect = txt_eff.BOLD if n==main_score_id else ''
-      print(effect + f'{score_names[n]}: {score:.{round_by}f}' + txt_eff.END)
-    print('-'*10)
-
+                                          
 def plot_corrs(df, method='pearson', plot_size=8):
   table = df.corr(method=method)
   fig, ax = plt.subplots(figsize=(plot_size, plot_size))
@@ -69,3 +61,41 @@ def plot_corrs(df, method='pearson', plot_size=8):
   plt.tight_layout()
   plt.show()                                    
                                           
+
+# CROSS-VALIDATION
+
+def bulk_cv_jobs(models, xdatas, ydatas, product_jobs=False):
+  if product_jobs:
+    all_jobs = product(*[models, xdatas, ydatas])
+  else:
+    all_jobs = zip(models, xdatas, ydatas)
+  return all_jobs
+
+
+def score_cross_validation(model, x, y, scoring_dict,
+                           cv=10, n_jobs=-1, return_estimator=False):
+  results = cross_validate(model, x, y, cv=cv, n_jobs=n_jobs,
+                            scoring=list(scoring_dict.values()),
+                            return_estimator=return_estimator)
+  chosen_results = []
+  for score_name, scores in scoring_dict.items():
+    biggest = max(results['test_'+scores])
+    average = np.mean(results['test_'+scores])
+    std = np.std(results['test_'+scores])
+    chosen_results.extend([biggest, average, std])
+
+  score_names = [[f'Max {name}', f'Mean {name}', f'Std {name}'] for name in scoring_dict.keys()]
+  score_names = list(chain(*score_names))
+
+  return chosen_results, score_names
+
+
+def rank_results(scores, item_names, score_names, main_score_id=0, round_by=5):
+  results = sorted(zip(item_names, scores), key=lambda x: x[1][main_score_id], reverse=True)
+  for res in results:
+    name = res[0]
+    print(txt_eff.BOLD + txt_eff.UNDERLINE + name + txt_eff.END)
+    for n, score in enumerate(res[1]):
+      effect = txt_eff.BOLD if n==main_score_id else ''
+      print(effect + f'{score_names[n]}: {score:.{round_by}f}' + txt_eff.END)
+    print('-'*10)
