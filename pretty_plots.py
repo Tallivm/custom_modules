@@ -25,7 +25,10 @@ def column_hists(df, ncol=5, square_size=3):
   fig, axs = plt.subplots(x, y, figsize=(y*square_size, x*square_size))
   for n, col in zip_longest(range(x*y), df.columns):
     x0, x1 = 0+n//ncol, 0+n%ncol
-    if col:
+    if col and (len(df.columns) <= ncol):
+      axs[x1].hist(df[col], color=next(c_palette))
+      axs[x1].set_title(col)
+    elif col:
       axs[x0, x1].hist(df[col], color=next(c_palette))
       axs[x0, x1].set_title(col)
     else: axs[x0, x1].axis('off')
