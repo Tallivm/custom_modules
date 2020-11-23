@@ -2,7 +2,6 @@ import matplotlib.pyplot as plt
 from matplotlib import cm
 from itertools import cycle, zip_longest, product, chain
 from numpy import linspace, ceil, arange
-from sklearn import cross_validate
 
 
 c_palette = cycle(cm.tab20(linspace(0,1,20)))
@@ -74,25 +73,7 @@ def bulk_cv_jobs(models, xdatas, ydatas, product_jobs=False):
   return all_jobs
 
 
-def score_cross_validation(model, x, y, scoring_dict,
-                           cv=10, n_jobs=-1, return_estimator=False):
-  results = cross_validate(model, x, y, cv=cv, n_jobs=n_jobs,
-                            scoring=list(scoring_dict.values()),
-                            return_estimator=return_estimator)
-  chosen_results = []
-  for score_name, scores in scoring_dict.items():
-    biggest = max(results['test_'+scores])
-    average = np.mean(results['test_'+scores])
-    std = np.std(results['test_'+scores])
-    chosen_results.extend([biggest, average, std])
-
-  score_names = [[f'Max {name}', f'Mean {name}', f'Std {name}'] for name in scoring_dict.keys()]
-  score_names = list(chain(*score_names))
-
-  return chosen_results, score_names
-
-
-def rank_results(scores, item_names, score_names, main_score_id=0, round_by=5):
+def rank_results(scores, item_names, score_names, main_score_id=0, round_by=5, return_only_best=False):
   results = sorted(zip(item_names, scores), key=lambda x: x[1][main_score_id], reverse=True)
   for res in results:
     name = res[0]
@@ -100,4 +81,5 @@ def rank_results(scores, item_names, score_names, main_score_id=0, round_by=5):
     for n, score in enumerate(res[1]):
       effect = txt_eff.BOLD if n==main_score_id else ''
       print(effect + f'{score_names[n]}: {score:.{round_by}f}' + txt_eff.END)
+    if return_only_best: return
     print('-'*10)
