@@ -46,15 +46,15 @@ def plot_corrs(df, method='pearson', plot_size=8,
     ax.set_xticklabels([]), ax.set_yticklabels([])
     
   else:
-    ax.set_xticks(arange(len(df.columns)))
-    ax.set_yticks(arange(len(df.columns)))
-    ax.set_xticklabels(df.columns, fontsize=plot_size*1.6)
-    ax.set_yticklabels(df.columns, fontsize=plot_size*1.6)
+    ax.set_xticks(arange(table.shape[0]))
+    ax.set_yticks(arange(table.shape[0]))
+    ax.set_xticklabels(table.columns, fontsize=plot_size*1.6)
+    ax.set_yticklabels(table.columns, fontsize=plot_size*1.6)
     plt.setp(ax.get_xticklabels(), rotation=45, ha="right",
            rotation_mode="anchor")
 
     for i in range(table.shape[0]):
-      for j in range(table.shape[1]):
+      for j in range(table.shape[0]):
         sel_color = 'w' if table.iloc[i, j]<.5 else 'k'
         ax.text(j, i, table.iloc[i, j].round(2), fontsize=plot_size*1.6,
                 ha="center", va="center", color=sel_color)
