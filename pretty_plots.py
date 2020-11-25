@@ -36,7 +36,7 @@ def column_hists(df, ncol=5, square_size=3):
 
                                           
 def plot_corrs(df, method='pearson', plot_size=8,
-               label_off=False):
+               labels_off=False):
   table = df.corr(method=method)
   fig, ax = plt.subplots(figsize=(plot_size, plot_size))
   im = ax.imshow(table)
