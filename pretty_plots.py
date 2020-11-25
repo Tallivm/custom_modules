@@ -35,24 +35,32 @@ def column_hists(df, ncol=5, square_size=3):
   plt.show()
 
                                           
-def plot_corrs(df, method='pearson', plot_size=8):
+def plot_corrs(df, method='pearson', plot_size=8,
+               label_off=False):
   table = df.corr(method=method)
   fig, ax = plt.subplots(figsize=(plot_size, plot_size))
   im = ax.imshow(table)
-  ax.set_xticks(arange(len(df.columns)))
-  ax.set_yticks(arange(len(df.columns)))
-  ax.set_xticklabels(df.columns, fontsize=plot_size*1.6)
-  ax.set_yticklabels(df.columns, fontsize=plot_size*1.6)
-  plt.setp(ax.get_xticklabels(), rotation=45, ha="right",
-         rotation_mode="anchor")
+  
+  if labels_off:
+    ax.set_xticks([]), ax.set_yticks([])
+    ax.set_xticklabels([]), ax.set_yticklabels([])
+    
+  else:
+    ax.set_xticks(arange(len(df.columns)))
+    ax.set_yticks(arange(len(df.columns)))
+    ax.set_xticklabels(df.columns, fontsize=plot_size*1.6)
+    ax.set_yticklabels(df.columns, fontsize=plot_size*1.6)
+    plt.setp(ax.get_xticklabels(), rotation=45, ha="right",
+           rotation_mode="anchor")
+
+    for i in range(len(df.columns)):
+      for j in range(len(df.columns)):
+        sel_color = 'w' if table.iloc[i, j]<.5 else 'k'
+        ax.text(j, i, table.iloc[i, j].round(2), fontsize=plot_size*1.6,
+                ha="center", va="center", color=sel_color)
+      
   for edge, spine in ax.spines.items():
     spine.set_visible(False)
-
-  for i in range(len(df.columns)):
-    for j in range(len(df.columns)):
-      sel_color = 'w' if table.iloc[i, j]<.5 else 'k'
-      ax.text(j, i, table.iloc[i, j].round(2), fontsize=plot_size*1.6,
-              ha="center", va="center", color=sel_color)
 
   ax.set_title("Correlations plot", fontsize=plot_size*2.2)
   plt.tight_layout()
