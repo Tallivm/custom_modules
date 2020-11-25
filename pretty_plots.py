@@ -53,8 +53,8 @@ def plot_corrs(df, method='pearson', plot_size=8,
     plt.setp(ax.get_xticklabels(), rotation=45, ha="right",
            rotation_mode="anchor")
 
-    for i in range(len(df.columns)):
-      for j in range(len(df.columns)):
+    for i in range(table.shape[0]):
+      for j in range(table.shape[1]):
         sel_color = 'w' if table.iloc[i, j]<.5 else 'k'
         ax.text(j, i, table.iloc[i, j].round(2), fontsize=plot_size*1.6,
                 ha="center", va="center", color=sel_color)
